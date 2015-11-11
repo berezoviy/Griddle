@@ -45,9 +45,10 @@ function getPath(obj, ks) {
   return i === length ? obj : void 0;
 }
 
+
 // Based on the origin underscore _.pick function
 // Credit: https://github.com/jashkenas/underscore/blob/master/underscore.js
-function powerPick(object, keys) {
+module.exports = function (object, keys) {
   var result = {},
       obj = object,
       iteratee;
@@ -63,43 +64,4 @@ function powerPick(object, keys) {
   }
 
   return result;
-}
-
-// Gets all the keys for a flattened object structure.
-// Doesn't flatten arrays.
-// Input:
-// {
-//  a: {
-//    x: 1,
-//    y: 2
-//  },
-//  b: [3, 4],
-//  c: 5
-// }
-// Output:
-// [
-//  "a.x",
-//  "a.y",
-//  "b",
-//  "c"
-// ]
-function getKeys(obj, prefix) {
-  var keys = [];
-
-  _.each(obj, function (value, key) {
-    var fullKey = prefix ? prefix + "." + key : key;
-    if (_.isObject(value) && !_.isArray(value) && !_.isFunction(value)) {
-      keys = keys.concat(getKeys(value, fullKey));
-    } else {
-      keys.push(fullKey);
-    }
-  });
-
-  return keys;
-}
-
-module.exports = {
-  pick: powerPick,
-  getAt: getPath,
-  keys: getKeys
 };

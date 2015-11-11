@@ -9,7 +9,7 @@
     "pagination",
     "sort"
   ],
-  "main": "modules/griddle.jsx.js",
+  "main": "modules/griddle.jsx",
   "peerDependencies": {
     "react": "^0.14.2",
     "underscore": ">= 1.6.0 < 2"

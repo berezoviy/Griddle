@@ -4,6 +4,7 @@
    See License / Disclaimer https://raw.githubusercontent.com/DynamicTyped/Griddle/master/LICENSE
 */
 var React = require("react");
+var ReactDOM = require("react-dom");
 var GridTitle = require("./gridTitle.jsx");
 var GridRowContainer = require("./gridRowContainer.jsx");
 var ColumnProperties = require("./columnProperties.js");
@@ -60,7 +61,7 @@ var GridTable = React.createClass({
   gridScroll: function () {
     if (this.props.enableInfiniteScroll && !this.props.externalIsLoading) {
       // If the scroll height is greater than the current amount of rows displayed, update the page.
-      var scrollable = this.refs.scrollable.getDOMNode();
+      var scrollable = ReactDOM.findDOMNode(this.refs.scrollable);
       var scrollTop = scrollable.scrollTop;
       var scrollHeight = scrollable.scrollHeight;
       var clientHeight = scrollable.clientHeight;

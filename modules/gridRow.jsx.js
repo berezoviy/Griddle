@@ -6,12 +6,12 @@
 var React = require('react');
 var ColumnProperties = require('./columnProperties.js');
 var deep = require('./deep.js');
-var isFunction = require('lodash.isfunction');
-var transform = require('lodash.transform');
-var assign = require('lodash.assign');
-var defaults = require('lodash.defaults');
-var toPairs = require('lodash.topairs');
-var without = require('lodash.without');
+var isFunction = require('lodash/isFunction');
+var fromPairs = require('lodash/fromPairs');
+var assign = require('lodash/assign');
+var defaults = require('lodash/defaults');
+var toPairs = require('lodash/toPairs');
+var without = require('lodash/without');
 
 var GridRow = React.createClass({
   displayName: 'GridRow',
@@ -84,14 +84,7 @@ var GridRow = React.createClass({
 
     // make sure that all the columns we need have default empty values
     // otherwise they will get clipped
-    var defaultValues = transform(columns,function(result,value){
-      if (typeof value == "object") {
-       key = Object.keys(value)[0];
-       result[key]=value[key];
-      } else {
-       result[value]=undefined;
-      }
-    }, {});
+    var defaultValues = fromPairs(columns, []);
 
     // creates a 'view' on top the data so we will not alter the original data but will allow us to add default values to missing columns
     var dataView = assign({}, this.props.data);

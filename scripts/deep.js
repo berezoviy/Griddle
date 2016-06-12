@@ -1,6 +1,7 @@
-"use strict";
-
-var _ = require("underscore");
+var forEach = require('lodash/forEach');
+var isObject = require('lodash/isObject');
+var isArray = require('lodash/isArray');
+var isFunction = require('lodash/isFunction');
 
 // Credits: https://github.com/documentcloud/underscore-contrib
 // Sub module: underscore.object.selectors
@@ -29,11 +30,15 @@ function keysFromPath(path) {
 // Gets the value at any depth in a nested object based on the
 // path described by the keys given. Keys may be given as an array
 // or as a dot-separated string.
-function getPath(obj, ks) {
-  ks = typeof ks == "string" ? keysFromPath(ks) : ks;
+function getPath (obj, ks) {
+  if (typeof ks == "string") {
+    if(obj[ks] !== undefined) {
+      return obj[ks];
+    }
+    ks = keysFromPath(ks);
+  }
 
-  var i = -1,
-      length = ks.length;
+  var i = -1, length = ks.length;
 
   // If the obj is null or undefined we have to break as
   // a TypeError will result trying to access any property
@@ -45,16 +50,11 @@ function getPath(obj, ks) {
   return i === length ? obj : void 0;
 }
 
-
 // Based on the origin underscore _.pick function
 // Credit: https://github.com/jashkenas/underscore/blob/master/underscore.js
-module.exports = function (object, keys) {
-  var result = {},
-      obj = object,
-      iteratee;
-  iteratee = function (key, obj) {
-    return key in obj;
-  };
+function powerPick (object, keys) {
+  var result = {}, obj = object, iteratee;
+  iteratee = function(key, obj) { return key in obj; };
 
   obj = Object(obj);
 
@@ -64,4 +64,43 @@ module.exports = function (object, keys) {
   }
 
   return result;
+}
+
+// Gets all the keys for a flattened object structure.
+// Doesn't flatten arrays.
+// Input:
+// {
+//  a: {
+//    x: 1,
+//    y: 2
+//  },
+//  b: [3, 4],
+//  c: 5
+// }
+// Output:
+// [
+//  "a.x",
+//  "a.y",
+//  "b",
+//  "c"
+// ]
+function getKeys (obj, prefix) {
+  var keys = [];
+
+  forEach( obj, function(value, key) {
+    var fullKey = prefix ? prefix + "." + key : key;
+    if(isObject(value) && !isArray(value) && !isFunction(value)) {
+      keys = keys.concat( getKeys(value, fullKey) );
+    } else {
+      keys.push(fullKey);
+    }
+  });
+
+  return keys;
+}
+
+module.exports = {
+  pick: powerPick,
+  getAt: getPath,
+  keys: getKeys
 };

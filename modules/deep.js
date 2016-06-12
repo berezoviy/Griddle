@@ -1,6 +1,9 @@
-"use strict";
+'use strict';
 
-var _ = require("underscore");
+var forEach = require('lodash/forEach');
+var isObject = require('lodash/isObject');
+var isArray = require('lodash/isArray');
+var isFunction = require('lodash/isFunction');
 
 // Credits: https://github.com/documentcloud/underscore-contrib
 // Sub module: underscore.object.selectors
@@ -30,7 +33,12 @@ function keysFromPath(path) {
 // path described by the keys given. Keys may be given as an array
 // or as a dot-separated string.
 function getPath(obj, ks) {
-  ks = typeof ks == "string" ? keysFromPath(ks) : ks;
+  if (typeof ks == "string") {
+    if (obj[ks] !== undefined) {
+      return obj[ks];
+    }
+    ks = keysFromPath(ks);
+  }
 
   var i = -1,
       length = ks.length;
@@ -86,9 +94,9 @@ function powerPick(object, keys) {
 function getKeys(obj, prefix) {
   var keys = [];
 
-  _.each(obj, function (value, key) {
+  forEach(obj, function (value, key) {
     var fullKey = prefix ? prefix + "." + key : key;
-    if (_.isObject(value) && !_.isArray(value) && !_.isFunction(value)) {
+    if (isObject(value) && !isArray(value) && !isFunction(value)) {
       keys = keys.concat(getKeys(value, fullKey));
     } else {
       keys.push(fullKey);
